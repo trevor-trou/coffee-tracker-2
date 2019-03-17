@@ -1,7 +1,7 @@
 {
-  "name": "brewcoffee",
+  "name": "getdashboard",
   "version": "1.0.0",
-  "description": "AWS Lambda Function to brew coffee",
+  "description": "AWS Lambda Function to get data for the dashboard",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"

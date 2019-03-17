@@ -1,3 +1,4 @@
 **/node_modules/
 **/*.zip
 testlambda.js
+.vscode/launch.json
