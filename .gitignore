@@ -2,4 +2,4 @@
 **/*.zip
 testlambda.js
 .vscode/launch.json
-website/dist
+website/dist*
