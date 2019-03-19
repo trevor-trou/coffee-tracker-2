@@ -33,7 +33,10 @@ module.exports = {
             { from: "./node_modules/bootstrap/dist/css/bootstrap.min.css", to: "./css/bootstrap.min.css" },
             { from: "./node_modules/bootstrap/dist/js/bootstrap.min.js", to: "./js/bootstrap.min.js" },
             { from: "./node_modules/jquery/dist/jquery.min.js", to: "./js/jquery.min.js" },
-            { from: "./node_modules/popper.js/dist/umd/popper.min.js", to: "./js/popper.min.js" }
+            { from: "./node_modules/popper.js/dist/umd/popper.min.js", to: "./js/popper.min.js" },
+            { from: "./src/images/favicon-16x16.png", to: "./images/favicon-16x16.png" },
+            { from: "./src/images/favicon-32x32.png", to: "./images/favicon-32x32.png" },
+            { from: "./src/images/favicon-96x96.png", to: "./images/favicon-96x96.png" }
         ])
     ],
     stats: {
