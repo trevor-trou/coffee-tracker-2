@@ -38,6 +38,9 @@ module.exports = {
         ]),
         new webpack.DefinePlugin({
             'process.env.NODE_ENV': JSON.stringify('production')
+        }),
+        new webpack.DefinePlugin({
+            'API_BASE_URL': JSON.stringify('https://coffee-api.trouchon.com')
         })
     ],
     stats: {

@@ -19,5 +19,5 @@ export function Card(props) {
 
 Card.propTypes = {
     title: PropTypes.string.isRequired,
-    data: PropTypes.string.isRequired
+    data: PropTypes.string
 }

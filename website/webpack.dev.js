@@ -37,7 +37,10 @@ module.exports = {
             { from: "./src/images/favicon-16x16.png", to: "./images/favicon-16x16.png" },
             { from: "./src/images/favicon-32x32.png", to: "./images/favicon-32x32.png" },
             { from: "./src/images/favicon-96x96.png", to: "./images/favicon-96x96.png" }
-        ])
+        ]),
+        new webpack.DefinePlugin({
+            'API_BASE_URL': JSON.stringify('https://coffee-api.trouchon.com')
+        })
     ],
     stats: {
         // copied from `'minimal'`

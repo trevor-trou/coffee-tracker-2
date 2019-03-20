@@ -9,7 +9,10 @@ test("stopwatch initializes correctly", () => {
     // Adding an additional millisecond to help avoid any rounding errors
     let pastTime = new Date(currentTime - (oneHour + oneMinute + oneSecond + 1));
     
-    let stopwatch = new Stopwatch(pastTime.toISOString(), null, currentTime);
+    let stopwatch = new Stopwatch(null, currentTime);
+
+    stopwatch.restart(pastTime.toISOString());
+    stopwatch.stop();
 
     expect(stopwatch.hours).toBe(1);
     expect(stopwatch.minutes).toBe(1);
@@ -17,7 +20,7 @@ test("stopwatch initializes correctly", () => {
 });
 
 test("stopwatch rolls over seconds", () => {
-    let stopwatch = new Stopwatch((new Date()).toISOString());
+    let stopwatch = new Stopwatch(null);
     stopwatch.hours = 0;
     stopwatch.minutes = 0;
     stopwatch.seconds = 58;
@@ -30,7 +33,7 @@ test("stopwatch rolls over seconds", () => {
 });
 
 test("stopwatch rolls over minutes", () => {
-    let stopwatch = new Stopwatch((new Date()).toISOString());
+    let stopwatch = new Stopwatch(null);
     stopwatch.hours = 0;
     stopwatch.minutes = 58;
     stopwatch.seconds = 58;

@@ -16,7 +16,7 @@ function getButton(subscribed) {
 }
 export function Menu(props) {
     return (
-        <nav className="navbar navbar-light bg-light mb-4">
+        <nav className="navbar navbar-light bg-light mb-3">
             <div className="navbar-brand">
                 <h4 style={{ margin: 0, padding: 0 }} >
                     <img src="images/favicon-32x32.png" width="30" height="30" className="d-inline-block align-top mr-2" alt="" />

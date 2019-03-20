@@ -1,11 +1,9 @@
 export class Stopwatch {
-    constructor(ISOString, onChangeCallback, refDate) {
+    constructor(onChangeCallback, refDate) {
         this.increment = this.increment.bind(this);
+        this.restart = this.restart.bind(this);
 
         this.onChangeCallback = onChangeCallback;
-        this.reset();
-        this.setInitialTime(ISOString, refDate);
-        this.start();
     }
 
     reset() {
@@ -15,6 +13,21 @@ export class Stopwatch {
         this.interval = null;
         this.incMin = false;
         this.incHour = false;
+    }
+
+    restart(ISOString) {
+        if (ISOString) {
+            this.stop();
+            this.reset();
+            this.setInitialTime(ISOString);
+            this.start();
+        }
+
+        return {
+            hours: this.hours,
+            minutes: this.minutes,
+            seconds: this.seconds
+        };
     }
 
     setInitialTime(ISOString, refDate) {
@@ -32,12 +45,14 @@ export class Stopwatch {
     }
 
     stop() {
-        clearInterval(this.interval);
-        this.interval = null;
+        if (this.interval) {
+            clearInterval(this.interval);
+            this.interval = null;
+        }
     }
 
     report() {
-        if(this.onChangeCallback) {
+        if (this.onChangeCallback) {
             this.onChangeCallback({
                 hours: this.hours,
                 minutes: this.minutes,
@@ -52,7 +67,7 @@ export class Stopwatch {
             this.minutes = 0;
             this.seconds = 0;
         }
-        else if(this.incMin) {
+        else if (this.incMin) {
             this.minutes += 1;
             this.seconds = 0;
         }

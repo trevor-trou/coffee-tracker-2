@@ -1,33 +1,39 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 
+import { Alert } from "./components/alert";
 import { Menu } from "./components/menu";
 import { Card } from "./components/card";
-import { Stopwatch } from "./classes/stopwatch";
-
+import { StopwatchCard } from "./components/stopwatchCard";
 
 class CoffeeTrackerPro extends React.Component {
     constructor(props) {
-        super(props)
+        super(props);
 
-        const cb = ({hours, minutes, seconds}) => {
-            let time = hours.toString();
-            time += minutes < 10 ? ":0" + minutes : ":" + minutes;
-            time += seconds < 10 ? ":0" + seconds : ":" + seconds;
-            console.log(time);
-        }
-        const s = new Stopwatch((new Date()).toISOString(), cb);
+        this.state = {
+            numToday: null,
+            numAllTime: null,
+            mostRecentBrew: null,
+            alert: null
+        };
     }
 
     componentDidMount() {
-        // console.log("About to fetch...");
-        // fetch("https://coffee-api.trouchon.com/getdashboard").then(response => {
-        //     return response.json();
-        // }).catch(err => {
-        //     console.error(err);
-        // }).then(json => {
-        //     console.log(JSON.stringify(json));
-        // });
+        fetch(`${API_BASE_URL}/getdashboard`).then(response => {
+            return response.json();
+        }).catch(err => {
+            console.error(err);
+            this.setState({
+                alert: "Unable to load... Please try again later."
+            });
+        }).then(json => {
+            const { numToday, numAllTime, mostRecentBrew } = json;
+            this.setState({
+                numToday: numToday.toString(),
+                numAllTime: numAllTime.toString(),
+                mostRecentBrew
+            });
+        });
     }
 
 
@@ -40,17 +46,18 @@ class CoffeeTrackerPro extends React.Component {
                         <Menu subscribed={true} />
                     </div>
                 </div>
-                <div className="row mb-4">
+                {this.state.alert && <Alert alert={this.state.alert} />}
+                <div className="row mb-3">
                     <div className="col">
-                        <Card title="Brewed Today" data={5} />
+                        <Card title="Brewed Today" data={this.state.numToday} />
                     </div>
                     <div className="col">
-                        <Card title="Total Brewed" data={5} />
+                        <Card title="Total Brewed" data={this.state.numAllTime} />
                     </div>
                 </div>
                 <div className="row">
                     <div className="col">
-                        <Card title="Time Since Last Brew" data={5} />
+                        <StopwatchCard title="Time Since Last Brew" ISOString={this.state.mostRecentBrew} />
                     </div>
                 </div>
             </div>
