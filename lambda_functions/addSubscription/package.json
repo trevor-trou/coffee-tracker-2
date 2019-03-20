@@ -1,0 +1,15 @@
+{
+  "name": "addsubscription",
+  "version": "1.0.0",
+  "description": "AWS Lambda Function to save a user's PushSubscription object",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Trevor Trouchon",
+  "license": "UNLICENSED",
+  "dependencies": {
+    "aws-sdk": "^2.424.0",
+    "uuid": "^3.3.2"
+  }
+}
