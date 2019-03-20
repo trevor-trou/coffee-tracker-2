@@ -5,6 +5,7 @@ import { Alert } from "./components/alert";
 import { Menu } from "./components/menu";
 import { Card } from "./components/card";
 import { StopwatchCard } from "./components/stopwatchCard";
+import { checkRegistration } from "./misc/helpers";
 
 class CoffeeTrackerPro extends React.Component {
     constructor(props) {
@@ -14,7 +15,8 @@ class CoffeeTrackerPro extends React.Component {
             numToday: null,
             numAllTime: null,
             mostRecentBrew: null,
-            alert: null
+            alert: null,
+            subscribed: null
         };
     }
 
@@ -34,6 +36,10 @@ class CoffeeTrackerPro extends React.Component {
                 mostRecentBrew
             });
         });
+
+        checkRegistration().then(result => {
+            this.setState({ subscribed: result });
+        });
     }
 
 
@@ -43,7 +49,7 @@ class CoffeeTrackerPro extends React.Component {
             <div className="container">
                 <div className="row">
                     <div className="col">
-                        <Menu subscribed={true} />
+                        <Menu subscribed={this.state.subscribed} />
                     </div>
                 </div>
                 {this.state.alert && <Alert alert={this.state.alert} />}

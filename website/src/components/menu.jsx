@@ -29,5 +29,5 @@ export function Menu(props) {
 }
 
 Menu.propTypes = {
-    subscribed: PropTypes.bool.isRequired
+    subscribed: PropTypes.bool
 };

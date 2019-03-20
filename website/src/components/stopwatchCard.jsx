@@ -1,6 +1,6 @@
 import * as React from 'react';
 import PropTypes from 'prop-types';
-import { Stopwatch } from "../classes/stopwatch";
+import { Stopwatch } from "../misc/stopwatch";
 
 export class StopwatchCard extends React.Component {
     constructor(props) {
