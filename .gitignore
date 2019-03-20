@@ -1,5 +1,6 @@
 **/node_modules/
 **/*.zip
 testlambda.js
-.vscode/launch.json
+testStopwatch.js
+**/.vscode/launch.json
 website/dist*
