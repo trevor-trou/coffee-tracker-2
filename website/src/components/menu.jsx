@@ -1,16 +1,16 @@
 import * as React from 'react';
 import PropTypes from 'prop-types';
 
-function getButton(subscribed) {
+function getButton({ subscribed, onClick }) {
     if (subscribed === null) {
         return (<button className="btn btn-outline-primary ml-2" disabled>Loading...</button>);
     }
     else if (subscribed) {
-        return (<button className="btn btn-success">Subscribed <i className="material-icons" style={{ fontSize: "inherit" }}>done</i></button>);
+        return (<button className="btn btn-success" onClick={onClick}>Subscribed <i className="material-icons" style={{ fontSize: "inherit" }}>done</i></button>);
     }
     else {
         return (<p className="text-muted font-italic" style={{ margin: 0, padding: 0 }}>
-            Want to be notified when the coffees fresh? <button className="btn btn-outline-primary ml-2">Subscribe</button>
+            Want to be notified when the coffee's fresh? <button className="btn btn-outline-primary ml-2" onClick={onClick}>Subscribe</button>
         </p>);
     }
 }
@@ -23,11 +23,12 @@ export function Menu(props) {
                     Coffee Tracker Pro
                 </h4>
             </div>
-            {getButton(props.subscribed)}
+            {getButton(props)}
         </nav>
     );
 }
 
 Menu.propTypes = {
-    subscribed: PropTypes.bool
+    subscribed: PropTypes.bool,
+    onClick: PropTypes.func.isRequired
 };

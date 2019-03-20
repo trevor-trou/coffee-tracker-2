@@ -3,9 +3,11 @@ const webpack = require('webpack');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
-module.exports = {
+const web = {
     mode: 'production',
-    entry: './src/app.jsx',
+    entry: {
+        main: './src/app.jsx'
+    },
     output: {
         path: path.resolve(__dirname, 'dist_prod'),
         filename: 'js/[name].bundle.js'
@@ -53,3 +55,23 @@ module.exports = {
         errorDetails: true,
     }
 }
+
+const worker = {
+    mode: 'production',
+    entry: {
+        worker: './src/worker.js',
+    },
+    output: {
+        path: path.resolve(__dirname, 'dist_prod'),
+        filename: '[name].bundle.js'
+    },
+    resolve: {
+        extensions: ['.js']
+    },
+    module: {
+        rules: []
+    },
+    plugins: [],
+}
+
+module.exports = [web, worker];

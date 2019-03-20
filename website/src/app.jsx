@@ -1,11 +1,11 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
-
 import { Alert } from "./components/alert";
 import { Menu } from "./components/menu";
 import { Card } from "./components/card";
 import { StopwatchCard } from "./components/stopwatchCard";
-import { checkRegistration } from "./misc/helpers";
+import { checkRegistration, subscribeUser, unsubscribeUser } from "./misc/helpers";
+
 
 class CoffeeTrackerPro extends React.Component {
     constructor(props) {
@@ -18,6 +18,8 @@ class CoffeeTrackerPro extends React.Component {
             alert: null,
             subscribed: null
         };
+
+        this.handleSubscriptionClick = this.handleSubscriptionClick.bind(this);
     }
 
     componentDidMount() {
@@ -42,6 +44,31 @@ class CoffeeTrackerPro extends React.Component {
         });
     }
 
+    handleSubscriptionClick() {
+        const subscribed = this.state.subscribed;
+        this.setState({ subscribed: null });
+
+        if (!subscribed) {
+            subscribeUser().then(res => {
+                this.setState({ subscribed: res });
+            }).catch(err => {
+                this.setState({ subscribed: false });
+                this.setState({
+                    alert: `Error subscribing: ${err}`
+                });
+            });
+        }
+        else {
+            unsubscribeUser().then(result => {
+                this.setState({ subscribed: false });
+            }).catch(err => {
+                this.setState({ subscribed: true });
+                this.setState({
+                    alert: `Error unsubscribing: ${err}`
+                });
+            });
+        }
+    }
 
 
     render() {
@@ -49,7 +76,7 @@ class CoffeeTrackerPro extends React.Component {
             <div className="container">
                 <div className="row">
                     <div className="col">
-                        <Menu subscribed={this.state.subscribed} />
+                        <Menu subscribed={this.state.subscribed} onClick={this.handleSubscriptionClick} />
                     </div>
                 </div>
                 {this.state.alert && <Alert alert={this.state.alert} />}
