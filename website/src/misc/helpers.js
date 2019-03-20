@@ -93,6 +93,29 @@ function registerServiceWorker() {
         });
 }
 
+function saveSubscription(pushSub) {
+    return new Promise((resolve, reject) => {
+        debugger;
+        fetch(`${API_BASE_URL}/addsubscription`, {
+            method: "POST",
+            mode: "cors",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            redirect: "follow",
+            body: JSON.stringify(pushSub)
+        }).then(res => res.json()).then(response => {
+            debugger;
+            console.log('Successfully saved subscription: ', JSON.stringify(response));
+            resolve(true);
+        }).catch(err => {
+            debugger;
+            console.error("Error saving subscription: ", err);
+            reject(err);
+        })
+    })
+}
+
 // Need the polyfill to support async which adds >300 modules...
 // Defaulting to promise-based execution
 // async function subscribeUser() {
@@ -138,8 +161,12 @@ export function subscribeUser() {
                         };
 
                         registration.pushManager.subscribe(subscribeOptions).then(pushSubscription => {
-                            console.log('Received PushSubscription: ', JSON.stringify(pushSubscription));
-                            resolve(true);
+                            //console.log('Received PushSubscription: ', JSON.stringify(pushSubscription));
+                            saveSubscription(pushSubscription).then(res => {
+                                resolve(true);
+                            }).catch(err => {
+                                reject(err);
+                            })
                         }).catch(err => {
                             reject(err);
                         });
@@ -171,7 +198,7 @@ export function unsubscribeUser() {
                             else {
                                 console.log("PushSubscription unsubscribed.");
                                 registration.unregister().then(regres => {
-                                    if(!regres) {
+                                    if (!regres) {
                                         reject("Unable to unregister service worker");
                                     }
                                     else {
@@ -184,7 +211,7 @@ export function unsubscribeUser() {
                     }
                     else {
                         registration.unregister().then(res => {
-                            if(!res) {
+                            if (!res) {
                                 reject("Unable to unregister service worker");
                             }
                             else {
