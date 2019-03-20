@@ -156,7 +156,7 @@ export function subscribeUser() {
                         const subscribeOptions = {
                             userVisibleOnly: true,
                             applicationServerKey: urlBase64ToUint8Array(
-                                'BM5_LJu5BeWR5v7vmp0xJhZIReuxcp824H-JWaORrZLMqDzbq3WR5klUALW1qsf-I2I9hjiSLtsTFY9rkQniSs0'
+                                'BH---bAZbEnuCnD04JZUd6D_o9c3oS-dCa4rk6LJXi5B4MULlIkFYqIAbabvJEdwXi6OPVqmvsjAADPm3DnR6ig'
                             )
                         };
 

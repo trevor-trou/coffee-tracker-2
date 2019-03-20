@@ -9,6 +9,7 @@
   "author": "Trevor Trouchon",
   "license": "UNLICENSED",
   "dependencies": {
-    "aws-sdk": "^2.422.0"
+    "aws-sdk": "^2.422.0",
+    "web-push": "^3.3.3"
   }
 }
