@@ -20,6 +20,9 @@ function urlBase64ToUint8Array(base64String) {
 
 export function checkRegistration() {
     return new Promise((resolve, reject) => {
+        if (!navigator.serviceWorker)
+            resolve(false);
+
         navigator.serviceWorker.getRegistration().then(registration => {
             if (registration) {
                 registration.pushManager.getSubscription().then(sub => {
@@ -39,7 +42,7 @@ export function checkRegistration() {
                 resolve(false);
             }
         });
-    })
+    });
 }
 
 /**
@@ -95,7 +98,6 @@ function registerServiceWorker() {
 
 function saveSubscription(pushSub) {
     return new Promise((resolve, reject) => {
-        debugger;
         fetch(`${API_BASE_URL}/addsubscription`, {
             method: "POST",
             mode: "cors",
@@ -105,11 +107,9 @@ function saveSubscription(pushSub) {
             redirect: "follow",
             body: JSON.stringify(pushSub)
         }).then(res => res.json()).then(response => {
-            debugger;
             console.log('Successfully saved subscription: ', JSON.stringify(response));
             resolve(true);
         }).catch(err => {
-            debugger;
             console.error("Error saving subscription: ", err);
             reject(err);
         })
@@ -196,29 +196,12 @@ export function unsubscribeUser() {
                             if (!res)
                                 reject("Unable to unsubscribe");
                             else {
-                                console.log("PushSubscription unsubscribed.");
-                                registration.unregister().then(regres => {
-                                    if (!regres) {
-                                        reject("Unable to unregister service worker");
-                                    }
-                                    else {
-                                        console.log("Service worker unregistered.");
-                                        resolve(true);
-                                    }
-                                })
+                                resolve(true);
                             }
                         })
                     }
                     else {
-                        registration.unregister().then(res => {
-                            if (!res) {
-                                reject("Unable to unregister service worker");
-                            }
-                            else {
-                                console.log("Service worker unregistered.");
-                                resolve(true);
-                            }
-                        });
+                        resolve(true);
                     }
                 });
             }

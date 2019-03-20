@@ -20,6 +20,7 @@ class CoffeeTrackerPro extends React.Component {
         };
 
         this.handleSubscriptionClick = this.handleSubscriptionClick.bind(this);
+        this.bindToServiceWorker = this.bindToServiceWorker.bind(this);
     }
 
     componentDidMount() {
@@ -42,6 +43,33 @@ class CoffeeTrackerPro extends React.Component {
         checkRegistration().then(result => {
             this.setState({ subscribed: result });
         });
+
+        this.bindToServiceWorker();
+    }
+
+    bindToServiceWorker() {
+        if (navigator.serviceWorker) {
+            navigator.serviceWorker.addEventListener('message', (e) => {
+                console.log(`Received: ${e.data}`);
+                const payload = JSON.parse(e.data);
+
+                if (payload.type === "brew") {
+                    this.setState((prevState) => {
+                        const numToday = (parseInt(prevState.numToday) + 1).toString();
+                        const numAllTime = (parseInt(prevState.numAllTime) + 1).toString();
+                        return {
+                            mostRecentBrew: payload.data,
+                            numToday,
+                            numAllTime
+                        };
+                    });
+                }
+            });
+            console.log("Bound to service worker.");
+        }
+        else {
+            console.log("No service worker present...");
+        }
     }
 
     handleSubscriptionClick() {

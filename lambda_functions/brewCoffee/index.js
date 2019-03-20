@@ -14,21 +14,20 @@ webpush.setVapidDetails(
 );
 
 const notification = {
-    title: "CoffeeTrackerPro",
+    title: "Coffee Tracker Pro",
     options: {
         body: "Coffee is Ready",
         icon: "images/coffee.png"
     }
 }
 
-const stringifiedNotification = JSON.stringify(notification);
-
 exports.handler = function (event, context, callback) {
     const docClient = new AWS.DynamoDB.DocumentClient();
+    const ISOString = (new Date()).toISOString();
 
-    brewCoffee(docClient, event).then(data => {
+    brewCoffee(docClient, event, ISOString).then(data => {
         getSubscriptions(docClient).then(pushSubs => {
-            sendNotifications(pushSubs).then(() => {
+            sendNotifications(pushSubs, ISOString).then(() => {
                 callback(null, "Success");
             }).catch(err => {
                 callback(null, "Coffee Logged, Notification error: " + JSON.stringify(err));
@@ -47,7 +46,7 @@ exports.handler = function (event, context, callback) {
  * Record the brew in the database
  * @param {AWS.DynamoDB.DocumentClient} client 
  */
-function brewCoffee(client, event) {
+function brewCoffee(client, event, ISOString) {
     return new Promise((resolve, reject) => {
         const table = "CoffeeTrackerPro";
 
@@ -55,7 +54,7 @@ function brewCoffee(client, event) {
             TableName: table,
             Item: {
                 type: "brew",
-                timestamp: (new Date()).toISOString(),
+                timestamp: ISOString,
                 apiKey: event["x-api-key"] || null
             }
         }
@@ -103,14 +102,23 @@ function getSubscriptions(client) {
  * Send notifications to subscribed users
  * @param {AWS.DynamoDB.DocumentClient} client 
  */
-function sendNotifications(subscriptions) {
+function sendNotifications(subscriptions, ISOString) {
     return new Promise((resolve, reject) => {
+        const toSend = {
+            payload: {
+                type: "brew",
+                data: ISOString
+            },
+            notification: notification
+        };
+        const payload = JSON.stringify(toSend);
+
         let promiseChain = Promise.resolve();
 
         for (let i = 0; i < subscriptions.length; i++) {
             const subscription = subscriptions[i];
             promiseChain = promiseChain.then(() => {
-                return triggerPushMsg(subscription);
+                return triggerPushMsg(subscription, payload);
             });
         }
 
@@ -122,8 +130,8 @@ function sendNotifications(subscriptions) {
     });
 }
 
-function triggerPushMsg(subscription) {
-    return webpush.sendNotification(subscription, stringifiedNotification, {
+function triggerPushMsg(subscription, payload) {
+    return webpush.sendNotification(subscription, payload, {
         TTL: 300
     }).catch((err) => {
         if (err.statusCode === 410) {
