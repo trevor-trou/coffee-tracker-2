@@ -38,6 +38,9 @@ export class Stopwatch {
         const diff = (currentTime / 60000) % 60;
         this.minutes = Math.floor(diff)
         this.seconds = Math.floor(60 * (diff - this.minutes));
+
+        this.incMin = this.seconds === 59;
+        this.incHour = this.minutes === 59;
     }
 
     start() {
