@@ -152,28 +152,30 @@ export function subscribeUser() {
         askPermission().then(() => {
             checkRegistration().then(subscribed => {
                 registerServiceWorker().then(registration => {
-                    if (!subscribed) {
-                        const subscribeOptions = {
-                            userVisibleOnly: true,
-                            applicationServerKey: urlBase64ToUint8Array(
-                                'BH---bAZbEnuCnD04JZUd6D_o9c3oS-dCa4rk6LJXi5B4MULlIkFYqIAbabvJEdwXi6OPVqmvsjAADPm3DnR6ig'
-                            )
-                        };
+                    navigator.serviceWorker.ready.then(() => {
+                        if (!subscribed) {
+                            const subscribeOptions = {
+                                userVisibleOnly: true,
+                                applicationServerKey: urlBase64ToUint8Array(
+                                    'BH---bAZbEnuCnD04JZUd6D_o9c3oS-dCa4rk6LJXi5B4MULlIkFYqIAbabvJEdwXi6OPVqmvsjAADPm3DnR6ig'
+                                )
+                            };
 
-                        registration.pushManager.subscribe(subscribeOptions).then(pushSubscription => {
-                            //console.log('Received PushSubscription: ', JSON.stringify(pushSubscription));
-                            saveSubscription(pushSubscription).then(res => {
-                                resolve(true);
+                            registration.pushManager.subscribe(subscribeOptions).then(pushSubscription => {
+                                //console.log('Received PushSubscription: ', JSON.stringify(pushSubscription));
+                                saveSubscription(pushSubscription).then(res => {
+                                    resolve(true);
+                                }).catch(err => {
+                                    reject(err);
+                                })
                             }).catch(err => {
                                 reject(err);
-                            })
-                        }).catch(err => {
-                            reject(err);
-                        });
-                    }
-                    else {
-                        resolve(true);
-                    }
+                            });
+                        }
+                        else {
+                            resolve(true);
+                        }
+                    });
                 }).catch(err => {
                     reject(err);
                 });
