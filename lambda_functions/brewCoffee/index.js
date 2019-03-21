@@ -27,7 +27,7 @@ exports.handler = function (event, context, callback) {
 
     brewCoffee(docClient, event, ISOString).then(data => {
         getSubscriptions(docClient).then(pushSubs => {
-            sendNotifications(pushSubs, ISOString).then(() => {
+            sendNotifications(pushSubs, ISOString, docClient).then(() => {
                 callback(null, "Success");
             }).catch(err => {
                 callback(null, "Coffee Logged, Notification error: " + JSON.stringify(err));
@@ -102,7 +102,7 @@ function getSubscriptions(client) {
  * Send notifications to subscribed users
  * @param {AWS.DynamoDB.DocumentClient} client 
  */
-function sendNotifications(subscriptions, ISOString) {
+function sendNotifications(subscriptions, ISOString, client) {
     return new Promise((resolve, reject) => {
         const toSend = {
             payload: {
@@ -118,7 +118,7 @@ function sendNotifications(subscriptions, ISOString) {
         for (let i = 0; i < subscriptions.length; i++) {
             const subscription = subscriptions[i];
             promiseChain = promiseChain.then(() => {
-                return triggerPushMsg(subscription, payload);
+                return triggerPushMsg(subscription, payload, client);
             });
         }
 
@@ -130,14 +130,33 @@ function sendNotifications(subscriptions, ISOString) {
     });
 }
 
-function triggerPushMsg(subscription, payload) {
+function triggerPushMsg(subscription, payload, client) {
     return webpush.sendNotification(subscription, payload, {
         TTL: 300
     }).catch((err) => {
         if (err.statusCode === 410) {
             console.log('No longer subscribed...');
+            deleteSubscription(subscription, client);
         } else {
             console.log('Subscription is no longer valid: ', err);
+            deleteSubscription(subscription, client);
+        }
+    });
+}
+
+function deleteSubscription(subscription, client) {
+    const table = "CoffeeTracker-Subscriptions";
+    const params = {
+        TableName: table,
+        Key: {
+            "SubscriptionId": subscription.SubscriptionId
+        }
+    }
+
+    console.log(`Attempting to delete ${subscription.SubscriptionId}...`);
+    client.delete(params, function(err, data) {
+        if(err) {
+            console.error(`Unable to delete subscription ${subscription.SubscriptionId}`);
         }
     });
 }
