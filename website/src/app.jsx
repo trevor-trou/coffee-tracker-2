@@ -70,9 +70,6 @@ class CoffeeTrackerPro extends React.Component {
             console.log("Bound to service worker.");
             this.subscribed = true;
         }
-        else {
-            console.log("No service worker present...");
-        }
     }
 
     handleSubscriptionClick() {
