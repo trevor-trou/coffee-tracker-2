@@ -27,7 +27,6 @@ class CoffeeTrackerPro extends React.Component {
 
     componentDidMount() {
         const { min, max } = getTodayRange();
-        debugger;
         fetch(`${API_BASE_URL}/getdashboard?min=${min}&max=${max}`).then(response => {
             return response.json();
         }).catch(err => {
