@@ -1,3 +1,25 @@
+export function getTodayRange() {
+    let minDate = new Date();
+    let maxDate = new Date();
+
+    // Set min to midnight
+    minDate.setHours(0);
+    minDate.setMinutes(0);
+    minDate.setSeconds(0);
+    minDate.setMilliseconds(0);
+
+    // Set max to 23:59:59.999
+    maxDate.setHours(23);
+    maxDate.setMinutes(59);
+    maxDate.setSeconds(59);
+    maxDate.setMilliseconds(999);
+
+    return {
+        min: minDate.toISOString(),
+        max: maxDate.toISOString()
+    };
+}
+
 /**
  * urlBase64ToUint8Array
  * 

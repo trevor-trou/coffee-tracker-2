@@ -4,7 +4,7 @@ import { Alert } from "./components/alert";
 import { Menu } from "./components/menu";
 import { Card } from "./components/card";
 import { StopwatchCard } from "./components/stopwatchCard";
-import { checkRegistration, subscribeUser, unsubscribeUser } from "./misc/helpers";
+import { checkRegistration, subscribeUser, unsubscribeUser, getTodayRange } from "./misc/helpers";
 
 
 class CoffeeTrackerPro extends React.Component {
@@ -26,7 +26,9 @@ class CoffeeTrackerPro extends React.Component {
     }
 
     componentDidMount() {
-        fetch(`${API_BASE_URL}/getdashboard`).then(response => {
+        const { min, max } = getTodayRange();
+        debugger;
+        fetch(`${API_BASE_URL}/getdashboard?min=${min}&max=${max}`).then(response => {
             return response.json();
         }).catch(err => {
             console.error(err);

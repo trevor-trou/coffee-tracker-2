@@ -11,7 +11,7 @@ const table = "CoffeeTrackerPro";
 
 exports.handler = async function (event, context, callback) {
     try {
-        const numToday = await numberBrewedToday(event.offset);
+        const numToday = await numberBrewedToday(event.min, event.max);
         const numAllTime = await numberBrewedAllTime();
         const mostRecentBrew = await mostRecent();
 
@@ -58,37 +58,32 @@ async function mostRecent() {
     })
 }
 
-async function numberBrewedToday(offset) {
+async function numberBrewedToday(min, max) {
     return new Promise((resolve, reject) => {
         // If no offset is specified, we'll return the number brewed on
         // the current UTC day. 
-        if (!offset)
-            offset = 0;
-        console.log(`Offset: ${offset}`);
+        if (!min || !max) {
+            let minDate = new Date();
+            let maxDate = new Date();
 
-        let min = new Date();
-        let max = new Date();
+            // Set min to midnight
+            minDate.setHours(0);
+            minDate.setMinutes(0);
+            minDate.setSeconds(0);
+            minDate.setMilliseconds(0);
 
-        // Set min to midnight
-        min.setHours(0);
-        min.setMinutes(0);
-        min.setSeconds(0);
-        min.setMilliseconds(0);
+            // Set max to 23:59:59.999
+            maxDate.setHours(23);
+            maxDate.setMinutes(59);
+            maxDate.setSeconds(59);
+            maxDate.setMilliseconds(999);
 
-        // Set max to 23:59:59.999
-        max.setHours(23);
-        max.setMinutes(59);
-        max.setSeconds(59);
-        max.setMilliseconds(999);
+            min = minDate.toISOString();
+            max = maxDate.toISOString();
+        }
 
-        // Account for the offset between the REQUEST's timezone
-        // and the SERVER's timezone
-        const diff = offset - min.getTimezoneOffset();
-        min = new Date(min.valueOf() + diff * 60 * 1000);
-        max = new Date(max.valueOf() + diff * 60 * 1000);
-
-        console.log(`Min: ${min.toISOString()}`);
-        console.log(`Max: ${max.toISOString()}`);
+        console.log(`Min: ${min}`);
+        console.log(`Max: ${max}`);
 
         const params = {
             TableName: table,
@@ -96,8 +91,8 @@ async function numberBrewedToday(offset) {
             KeyConditionExpression: "#t = :val AND #time BETWEEN :minDate AND :maxDate",
             ExpressionAttributeValues: {
                 ":val": "brew",
-                ":minDate": min.toISOString(),
-                ":maxDate": max.toISOString()
+                ":minDate": min,
+                ":maxDate": max
             },
             ExpressionAttributeNames: {
                 "#t": "type",
